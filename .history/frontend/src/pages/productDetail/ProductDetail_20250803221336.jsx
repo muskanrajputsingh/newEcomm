@@ -116,6 +116,7 @@ const handleAddToCart = async (productId) => {
 
     toast.success("🛒 Product added to cart!");
     console.log('Cart Response:', data); 
+  
   } catch (error) {
     console.error('Error adding to cart:', error.response?.data || error.message);
     toast.error("❌ Failed to add to cart");
