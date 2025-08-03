@@ -32,22 +32,17 @@ const Trendy = () => {
   }
 
   
-const handleAddToCart = async (productId) => {
-  try {
-    const data = await postData('/cart', { productId, quantity: 1 });
-
-    alert('Product added to cart!');
-    console.log('Cart Response:', data);
-
-    //  Refetch the updated cart
-    const updatedCart = await fetchDataFromApi("/cart");
-    setCartItems(updatedCart.cart || []);
-  } catch (error) {
-    console.error('Error adding to cart:', error.response?.data || error.message);
-    alert('Failed to add to cart');
-  }
-};
-
+  const handleAddToCart = async (productId) => {
+    try {
+      const data = await postData('/cart', { productId, quantity: 1 });
+  
+      alert('Product added to cart!');
+      console.log('Cart Response:', data);
+    } catch (error) {
+      console.error('Error adding to cart:', error.response?.data || error.message);
+      alert('Failed to add to cart');
+    }
+  };
   
 
   return (

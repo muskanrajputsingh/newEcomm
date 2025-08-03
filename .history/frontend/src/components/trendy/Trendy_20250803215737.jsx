@@ -39,7 +39,7 @@ const handleAddToCart = async (productId) => {
     alert('Product added to cart!');
     console.log('Cart Response:', data);
 
-    //  Refetch the updated cart
+    // ✅ Refetch the updated cart
     const updatedCart = await fetchDataFromApi("/cart");
     setCartItems(updatedCart.cart || []);
   } catch (error) {

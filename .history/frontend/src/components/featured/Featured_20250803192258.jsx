@@ -41,16 +41,11 @@ const handleAddToCart = async (productId) => {
 
     alert('Product added to cart!');
     console.log('Cart Response:', data);
-
-    //  Refetch the updated cart
-    const updatedCart = await fetchDataFromApi("/cart");
-    setCartItems(updatedCart.cart || []);
   } catch (error) {
     console.error('Error adding to cart:', error.response?.data || error.message);
     alert('Failed to add to cart');
   }
 };
-
 
   return (
     <section className="featured-section">
