@@ -1,6 +1,8 @@
+"use client"
+
 import { useState, useEffect, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import "./Carousel.css"
+import "./carousel.css"
 
 const Carousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
