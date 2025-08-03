@@ -6,6 +6,7 @@ import Home from './pages/home/Home'
 import ProductDetail from './pages/productDetail/ProductDetail';
 import Cart from './pages/cart/Cart';
 import ProductListing from './pages/productListing/ProductListing';
+import Search from './components/search';
 
 function App() {
  

@@ -7,6 +7,7 @@ import ProductDetail from './pages/productDetail/ProductDetail';
 import Cart from './pages/cart/Cart';
 import ProductListing from './pages/productListing/ProductListing';
 
+
 function App() {
  
   return (
