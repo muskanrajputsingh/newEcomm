@@ -1,5 +1,5 @@
 import { Calendar, User, ArrowRight } from "lucide-react"
-import "./Blog.css"
+import "./log.css"
 
 const Blog = () => {
   const blogPosts = [
