@@ -3,7 +3,6 @@ import "./Trendy.css"
 import { useEffect,useState } from "react"
 import { fetchDataFromApi,postData } from "../../utils/api"
 import { Link } from "react-router-dom"
-import { toast } from 'react-toastify';
 
 const Trendy = () => {
   const [trendyProducts, setTrendyProducts] = useState([]);
@@ -37,12 +36,12 @@ const handleAddToCart = async (productId) => {
   try {
     const data = await postData('/cart', { productId, quantity: 1 });
 
-    toast.success("🛒 Product added to cart!");
-    console.log('Cart Response:', data); 
-     window.location.reload();
+    alert('Product added to cart!');
+    console.log('Cart Response:', data);
+
   } catch (error) {
     console.error('Error adding to cart:', error.response?.data || error.message);
-    toast.error("❌ Failed to add to cart");
+    alert('Failed to add to cart');
   }
 };
 

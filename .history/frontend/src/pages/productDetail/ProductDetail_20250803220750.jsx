@@ -9,7 +9,7 @@ import "swiper/css/thumbs"
 import "./ProductDetail.css" 
 import { useParams } from "react-router-dom"
 import { fetchDataFromApi,postData } from "@/utils/api"
-import { toast } from 'react-toastify';
+
  
 const ProductDetail = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
@@ -114,12 +114,12 @@ const handleAddToCart = async (productId) => {
   try {
     const data = await postData('/cart', { productId, quantity: 1 });
 
-    toast.success("🛒 Product added to cart!");
-    console.log('Cart Response:', data); 
-     window.location.reload();
+    alert('Product added to cart!');
+    console.log('Cart Response:', data);
+
   } catch (error) {
     console.error('Error adding to cart:', error.response?.data || error.message);
-    toast.error("❌ Failed to add to cart");
+    alert('Failed to add to cart');
   }
 };
 

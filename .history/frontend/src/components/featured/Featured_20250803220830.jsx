@@ -42,8 +42,9 @@ const handleAddToCart = async (productId) => {
     const data = await postData('/cart', { productId, quantity: 1 });
 
     toast.success("🛒 Product added to cart!");
-    console.log('Cart Response:', data); 
-     window.location.reload();
+    console.log('Cart Response:', data);
+   
+    // window.location.reload();
   } catch (error) {
     console.error('Error adding to cart:', error.response?.data || error.message);
     toast.error("❌ Failed to add to cart");

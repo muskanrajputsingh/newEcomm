@@ -12,7 +12,7 @@ function App() {
   return (
     <>
     <BrowserRouter>
-     <ToastContainer position="top-right" autoClose={3000} />
+    
     <Navbar />
       <Routes>
         <Route exact path='/' element={<Home />}/>
