@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import "./ProductListing.css";
 import { useParams } from "react-router-dom";
-import { fetchDataFromApi,postData } from "@/utils/api";
+import { fetchDataFromApi,P } from "@/utils/api";
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
