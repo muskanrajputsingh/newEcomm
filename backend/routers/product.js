@@ -86,8 +86,6 @@ router.get('/product', async (req, res) => {
     }
 });
 
-
-
 // POST New Product
 router.post('/product', async (req, res) => {
     try {
