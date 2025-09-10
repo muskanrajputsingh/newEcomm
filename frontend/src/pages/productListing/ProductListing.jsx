@@ -31,12 +31,17 @@ const ProductListing = () => {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 1000]);
 
+    // ✅ Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 6;
+
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const res = await fetchDataFromApi(`/product?subCatId=${id}&all=true`);
         setProducts(Array.isArray(res.productList) ? res.productList : []);
+        setCurrentPage(1); 
         console.log(res)
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -51,16 +56,6 @@ const ProductListing = () => {
     }
   }, [id]);
 
-    const filterData = async (categoryId) => {
-    setLoading(true);
-    try {
-   
-    const res = await fetchDataFromApi(`/product?subCatId=${categoryId}&all=true`);
-      setProducts(res.productList || []);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleChange = (event) => {
     const newSubCatId = event.target.value;
@@ -149,10 +144,11 @@ const filterByBrand = async (brand) => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    fetchSubCategories();
-  }, []);
+useEffect(() => {
+  window.scrollTo(0, 0);
+  fetchSubCategories();
+}, [id, subCatId]);   // ✅ run again when route id or filter subcat changes
+
 
 const handleAddToCart = async (productId) => {
   try {
@@ -167,15 +163,17 @@ const handleAddToCart = async (productId) => {
 };
 
 
-  const fetchSubCategories = async () => {
+ const fetchSubCategories = async () => {
   try {
     const res = await fetchDataFromApi("/subcategory?all=true");
     if (res && Array.isArray(res.subCategoryList)) {
       setSubCategories(res.subCategoryList);
 
-      // Find the current subcategory by ID
+      // Pick active subcat from either filter or route
+      const activeSubCatId = subCatId || id;
+
       const selectedSubCat = res.subCategoryList.find(
-        (sub) => sub._id === id // using `id` from useParams
+        (sub) => sub._id === activeSubCatId
       );
 
       if (selectedSubCat) {
@@ -189,6 +187,7 @@ const handleAddToCart = async (productId) => {
   }
 };
 
+
 const relatedSubCategories = subCategories.filter(
   (sub) =>
     sub.category._id === currentCategoryId && sub._id !== id
@@ -196,6 +195,13 @@ const relatedSubCategories = subCategories.filter(
 
 
   const uniqueBrands = [...new Set(products.map((p) => p.brand))];
+
+ // ✅ Pagination logic
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
 
   return (
     <div className="product-listing-container">
@@ -362,92 +368,92 @@ const relatedSubCategories = subCategories.filter(
             </div>
           </div>
 
-          {/* Product Cards */}
-          {loading ? (
-            <div className="loading-products">
-              <div className="spinner"></div>
-              <p>Loading collection...</p>
-            </div>
-          ) : products.length === 0 ? (
-            <div className="no-products">
-              <h3>No products found</h3>
-              <p>Try adjusting your filters to find what you're looking for.</p>
-              <button className="reset-filters-btn" onClick={clearFilters}>
-                Reset Filters
-              </button>
-            </div>
-          ) : (
-            <div className={`products-container ${viewMode}`}>
-              {products.map((product) => (
-                <div key={product._id} className="product-card">
-                  <div className="product-image-container">
-                    <img
-                      src={product.images[0] || "/placeholder.svg"}
-                      alt={product.name}
-                      className="product-image"
-                    />
-                    {product.discount > 0 && (
-                      <span className="discount-badge">
-                        -{product.discount}%
-                      </span>
-                    )}
-                    {product.badge && (
-                      <span className="product-badge">{product.badge}</span>
-                    )}
-                    <div className="product-actions">
-                      <button
-                        className={`wishlist-btn ${
-                          wishlist.includes(product.id) ? "active" : ""
-                        }`}
-                        onClick={() => toggleWishlist(product.id)}
-                      >
-                        <Heart size={20} />
-                      </button>
-                    </div>
-                    <button className="add-to-cart-btn2"
-                      onClick={(e) => {
-                        e.preventDefault(); 
-                        handleAddToCart(product._id);
-                      }}>
-                      <ShoppingBag size={18} />
-                      <span>Add to Cart</span>
-                    </button>
-                  </div>
-
-                  <div className="product-info">
-                    <div className="product-brand">{product.brand}</div>
-                    <h3 className="product-name">{product.name}</h3>
-                    <div className="product-category">{product.category.catName}</div>
-                    <div className="product-rating">
-                      <div className="stars">
-                       {renderStars(Number(product.rating || 0))}
-                      </div>
-                    </div>
-                    <div className="product-price">
-                      <span className="current-price">
-                        {formatPrice(product.price)}
-                      </span>
-                      {product.oldPrice > product.price && (
-                        <span className="original-price">
-                          {formatPrice(product.oldPrice)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+             {/* Product Cards */}
+      {loading ? (
+        <div className="loading-products">
+          <div className="spinner"></div>
+          <p>Loading collection...</p>
+        </div>
+      ) : currentProducts.length === 0 ? (
+        <div className="no-products">
+          <h3>No products found</h3>
+        </div>
+      ) : (
+        <div className={`products-container ${viewMode}`}>
+          {currentProducts.map((product) => (
+            <div key={product._id} className="product-card">
+              <div className="product-image-container">
+                <img
+                  src={product.images[0] || "/placeholder.svg"}
+                  alt={product.name}
+                  className="product-image"
+                />
+                <div className="product-actions">
+                  <button
+                    className={`wishlist-btn ${
+                      wishlist.includes(product._id) ? "active" : ""
+                    }`}
+                    onClick={() => toggleWishlist(product._id)}
+                  >
+                    <Heart size={20} />
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
+               <button className="add-to-cart-btn2" onClick={(e) => { e.preventDefault(); handleAddToCart(product._id); }}> 
+                <ShoppingBag size={18} /> <span>Add to Cart</span>
+                 </button>
+              </div>
 
-          {/* Pagination */}
-          <div className="pagination">
-            <button className="page-btn active">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn next">
-              Next <ChevronDown className="rotate-270" size={16} />
+              <div className="product-info">
+                <div className="product-brand">{product.brand}</div>
+                <h3 className="product-name">{product.name}</h3>
+                <div className="product-price">
+                  <span className="current-price">
+                    {formatPrice(product.price)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+
+      {/* ✅ Pagination */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="page-btn"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              className={`page-btn ${
+                currentPage === index + 1 ? "active" : ""
+              }`}
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
             </button>
-          </div>
+          ))}
+
+          <button
+            className="page-btn"
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
+
+
         </main>
       </div>
     </div>

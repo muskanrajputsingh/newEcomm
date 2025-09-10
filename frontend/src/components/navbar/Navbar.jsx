@@ -98,12 +98,12 @@ const Navbar = () => {
 
             <div className="navbar-actions">
               <button className="nav-btn">
-                <Link to="/"><Heart size={20} /></Link>
-                <span className="badge">2</span>
-              </button>
-              <button className="nav-btn">
                 <Link to='/cart'><ShoppingCart size={20} /></Link>
                 <span className="badge">{cartItems.length}</span>
+              </button>
+              <button className="nav-btn">
+                <Link to="/"><Heart size={20} /></Link>
+                <span className="badge">2</span>
               </button>
               <div className="user-dropdown-container">
                 <button className="nav-btn" onClick={toggleUserDropdown}>
