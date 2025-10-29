@@ -26,7 +26,7 @@ import {
                 </div>
                 <div className="feature-content">
                   <h4>Free Shipping</h4>
-                  <p>On orders over $50</p>
+                  <p>On orders over ₹50</p>
                 </div>
               </div>
               <div className="feature-item">

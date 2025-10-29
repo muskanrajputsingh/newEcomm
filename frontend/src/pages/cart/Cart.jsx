@@ -105,7 +105,7 @@ const Cart = () => {
     setAppliedCoupon(null);
   };
 
-  const formatPrice = (price) => `$${price.toFixed(2)}`;
+  const formatPrice = (price) => `₹${price.toFixed(2)}`;
 
   const handleCheckout = () => {
     alert("Proceeding to checkout...");

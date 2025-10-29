@@ -418,7 +418,7 @@ const relatedSubCategories = subCategories.filter(
       )}
 
 
-      {/* ✅ Pagination */}
+      {/*  Pagination */}
       {totalPages > 1 && (
         <div className="pagination">
           <button

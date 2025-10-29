@@ -74,8 +74,8 @@ const handleAddToCart = async (productId) => {
 
                 <div className="product-footer">
                   <div className="product-price">
-                    <span className="current-price">${product.price}</span>
-                    <span className="original-price">${product.oldPrice}</span>
+                    <span className="current-price">₹{product.price}</span>
+                    <span className="original-price">₹{product.oldPrice}</span>
                   </div>
                   <button className="add-to-cart-btn"
                    onClick={(e) => {

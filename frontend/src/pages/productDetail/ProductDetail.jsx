@@ -206,9 +206,9 @@ useEffect(() => {
               </div>
             </div>
             <div className="price2-container">
-              <span className="current-price2">${products?.price}</span>
-              <span className="original-price2">${products?.oldPrice}</span>
-              <span className="savings-badge2">Save ${(products?.oldPrice - products?.price).toFixed(2)}</span>
+              <span className="current-price2">₹{products?.price}</span>
+              <span className="original-price2">₹{products?.oldPrice}</span>
+              <span className="savings-badge2">Save ₹{(products?.oldPrice - products?.price).toFixed(2)}</span>
             </div>
           </div>
  
@@ -427,7 +427,7 @@ useEffect(() => {
           <div className="product2-card-content">
             <h3 className="product2-card-title">{relatedProduct.name}</h3>
             <div className="product2-card-footer">
-              <span className="product2-card-price">${relatedProduct.price}</span>
+              <span className="product2-card-price">₹{relatedProduct.price}</span>
               <div className="product2-card-rating">
                 {renderStars(Math.floor(relatedProduct.rating))}
                 <span className="rating-number">({relatedProduct.rating})</span>

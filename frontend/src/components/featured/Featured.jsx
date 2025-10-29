@@ -118,8 +118,8 @@ const handleAddToCart = async (productId) => {
                   </div>
 
                   <div className="product-price">
-                    <span className="current-price">${product.price}</span>
-                    {product.price && <span className="original-price">${product.oldPrice}</span>}
+                    <span className="current-price">₹{product.price}</span>
+                    {product.price && <span className="original-price">₹{product.oldPrice}</span>}
                   </div>
 
                  <button

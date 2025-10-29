@@ -276,7 +276,7 @@ export default function AddProduct() {
           <div className="form-row">
            
             <div className="form-group">
-              <label htmlFor="price">Price ($) *</label>
+              <label htmlFor="price">Price (₹) *</label>
               <input
                 type="number"
                 id="price"
@@ -291,7 +291,7 @@ export default function AddProduct() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="oldprice">Old Price ($) *</label>
+              <label htmlFor="oldprice">Old Price (₹) *</label>
               <input
                 type="number"
                 id="oldprice"

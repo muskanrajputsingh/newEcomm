@@ -95,7 +95,7 @@ export default function Dashboard() {
           <p>Total Products</p>
         </div>
         <div className="stat-card">
-          <h3>${totalRevenue.toLocaleString()}</h3>
+          <h3>₹{totalRevenue.toLocaleString()}</h3>
           <p>Total Inventory Value</p>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default function Dashboard() {
                 </td>
                 <td>{item.category?.catName || "-"}</td>
                 <td>{item.subCat?.subCat || "-"}</td>
-                <td>${item.price}</td>
+                <td>₹{item.price}</td>
                 <td>{item.countInStock}</td>
                 <td style={{ display: "flex", alignItems: "center" }}>
                   <button className="btn btn-success" style={{ padding: "6px 12px", fontSize: "12px" }}>
