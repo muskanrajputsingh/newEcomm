@@ -1,91 +1,69 @@
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Search, ShoppingCart, User, Menu, X, Heart } from "lucide-react"
 import "./Navbar.css"
-import { Link } from "react-router-dom";
-import { fetchDataFromApi } from "../../utils/api";
-import { RiLoginCircleLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom"
+import { fetchDataFromApi } from "../../utils/api"
+import { RiLoginCircleLine } from "react-icons/ri"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [catData, setCatData] = useState({ categoryList: []});
-  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [subCatData, setSubCatData] = useState({ subCategoryList: []})
-  const [cartItems,setCartItems] = useState([]);
-  const navigate = useNavigate();
-
+  const [catData, setCatData] = useState({ categoryList: [] })
+  const [subCatData, setSubCatData] = useState({ subCategoryList: [] })
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
+  const [cartItems, setCartItems] = useState([])
+  const [loading, setLoading] = useState(true)   
+  const navigate = useNavigate()
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    fetchCategories();
-    fetchingSubCategory();
+    window.scrollTo(0, 0)
+    fetchAllData()
 
     const handleClickOutside = (event) => {
       if (!event.target.closest('.user-dropdown') && !event.target.closest('.nav-btn')) {
-        setIsUserDropdownOpen(false);
+        setIsUserDropdownOpen(false)
       }
-    };
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
 
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
-
-    useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const data = await fetchDataFromApi("/cart");
-        setCartItems(data.cart || []);
-      } catch (error) {
-        console.error("Failed to fetch cart:", error);
-      }
-    };
-
-    fetchCart();
-  }, []);
-
-
-  const fetchCategories = async () => {
-    const res = await fetchDataFromApi("/category?all=true");
-    setCatData(res);
-    console.log("Categories:", res)
-  };
-   
-  const fetchingSubCategory = async () => {
+  const fetchAllData = async () => {
     try {
-      const res = await fetchDataFromApi('/subcategory?all=true');
-      setSubCatData(res);
-      console.log("Subcategories:", res);
-    } catch (error) {
-      console.error("Error fetching subcategories:", error);
+      setLoading(true)
+      const [catRes, subCatRes, cartRes] = await Promise.all([
+        fetchDataFromApi("/category?all=true"),
+        fetchDataFromApi("/subcategory?all=true"),
+        fetchDataFromApi("/cart")
+      ])
+      setCatData(catRes)
+      setSubCatData(subCatRes)
+      setCartItems(cartRes.cart || [])
+    } catch (err) {
+      console.error("Error loading data:", err)
+    } finally {
+      setLoading(false)   // 👈 stop loading
     }
   }
 
   const toggleUserDropdown = (e) => {
-    e.stopPropagation();
-    setIsUserDropdownOpen(!isUserDropdownOpen);
-  };
+    e.stopPropagation()
+    setIsUserDropdownOpen(!isUserDropdownOpen)
+  }
 
   const handleSearch = () => {
-  if (!searchQuery.trim()) return;
-
-  const query = searchQuery.trim().toLowerCase();
-
-  // Try to match search input with subcategory name
-  const matchedSubCat = subCatData.subCategoryList.find(sub =>
-    sub.subCat.toLowerCase().includes(query)
-  );
-
-  if (matchedSubCat) {
-    navigate(`/subCat/${matchedSubCat._id}`);
-  } else {
-    alert("No matching subcategory found.");
+    if (!searchQuery.trim()) return
+    const query = searchQuery.trim().toLowerCase()
+    const matchedSubCat = subCatData.subCategoryList.find(sub =>
+      sub.subCat.toLowerCase().includes(query)
+    )
+    if (matchedSubCat) navigate(`/subCat/${matchedSubCat._id}`)
+    else alert("No matching subcategory found.")
   }
-};
 
   return (
     <nav className="navbar">
+     
       {/* Top Navbar */}
       <div className="navbar-top">
         <div className="container">
@@ -133,50 +111,55 @@ const Navbar = () => {
         <div className="container">
           <div className="navbar-bottom-content">
 
-            <div className="categories">
-              {catData.categoryList?.map((category, index) => (
-                <div className="category-item" key={index}>
-                  <Link to="#" className="category-link">
-                    {category.catName}
-                  </Link>
-                  <div className="category-dropdown">
-                    <div className="category-dropdown-header">
-                      <Link to={''}>
-                       {
-                        subCatData.subCategoryList?.filter(sub=>sub.category && sub.category._id === category._id).map((sub,index)=>(
-                          <>
-                         <li><Link to={`/subCat/${sub?._id}`} key={index}>{sub.subCat}</Link></li> 
-                          <div className="dropdown-divider"></div>
-                          </>
-                        ))
-                       }
+            {/* Loading message */}
+            {loading ? (
+              <div className="loading-message">Loading...</div>   
+            ) : (
+              <>
+                <div className="categories">
+                  {catData.categoryList?.map((category, index) => (
+                    <div className="category-item" key={index}>
+                      <Link to="#" className="category-link">
+                        {category.catName}
                       </Link>
+                      <div className="category-dropdown">
+                        <div className="category-dropdown-header">
+                          {
+                            subCatData.subCategoryList?.filter(
+                              (sub) => sub.category && sub.category._id === category._id
+                            ).map((sub, i) => (
+                              <div key={i}>
+                                <li><Link to={`/subCat/${sub._id}`}>{sub.subCat}</Link></li>
+                                <div className="dropdown-divider"></div>
+                              </div>
+                            ))
+                          }
+                        </div>
+                      </div>
                     </div>
+                  ))}
+                </div>
+
+                <div className="search-bar">
+                  <div className="search-container">
+                    <Search size={20} className="search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="search-input"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSearch()
+                      }}
+                    />
+                    <button className="search-btn" onClick={handleSearch}>
+                      Search
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            <div className="search-bar">
-              <div className="search-container">
-                <Search size={20} className="search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSearch();
-                  }}
-                />
-
-             <button className="search-btn" onClick={handleSearch}>
-                  Search
-             </button>
-
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </div>
       </div>
