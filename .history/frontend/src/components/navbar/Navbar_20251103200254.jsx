@@ -81,6 +81,7 @@ const Navbar = () => {
               </button>
               <button className="nav-btn">
                 <Link to="/"><Heart size={20} /></Link>
+                <span className="badge">2</span>
               </button>
               <div className="user-dropdown-container">
                 <button className="nav-btn" onClick={toggleUserDropdown}>
