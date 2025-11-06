@@ -1,0 +1,32 @@
+.checkoutform .form-group{
+    margin-bottom: 20px;
+}
+.checkoutform .form-group input,
+.checkoutform .form-group .inps
+{
+    background-color: rgb(252, 251, 251);
+}
+
+.orderinfo{
+    background: #a09c9c;
+    padding: 25px;
+}
+.orderinfo thead{
+    border-top:1px solid rgba(0,0,0,0.1) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+}
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  padding-top:7px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

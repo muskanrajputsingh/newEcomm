@@ -1,31 +1,41 @@
-import './App.css'
+import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Footer from './components/footer/Footer'
-import Navbar from './components/navbar/Navbar'
-import Home from './pages/home/Home'
-import ProductDetail from './pages/productDetail/ProductDetail';
-import Cart from './pages/cart/Cart';
-import ProductListing from './pages/productListing/ProductListing';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Suspense, lazy } from "react";
+
+import Footer from "./components/footer/Footer";
+import Navbar from "./components/navbar/Navbar";
+
+//  Lazy-loaded pages
+const Home = lazy(() => import("./pages/home/Home"));
+const ProductDetail = lazy(() => import("./pages/productDetail/ProductDetail"));
+const Cart = lazy(() => import("./pages/cart/Cart"));
+const ProductListing = lazy(() => import("./pages/productListing/ProductListing"));
+const Checkout = lazy(()=> import("./pages/checkout/Checkout"))
 
 function App() {
- 
   return (
     <>
-    <BrowserRouter>
-     <ToastContainer position="top-right" autoClose={3000} />
-    <Navbar />
-      <Routes>
-        <Route exact path='/' element={<Home />}/>
-        <Route path='/productdetail/:id' element={<ProductDetail/>} />
-        <Route path='/cart' element={<Cart/>} />
-        <Route path='/subCat/:id' element={<ProductListing/>} />
-      </Routes>
-      <Footer/>
-    </BrowserRouter>
+      <BrowserRouter>
+        <ToastContainer position="top-right" autoClose={3000} />
+        <Navbar />
+        
+        {/* Suspense provides fallback UI while components load */}
+        <Suspense fallback={<div className="loading">Loading...</div>}>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route path="/productdetail/:id" element={<ProductDetail />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/subCat/:id" element={<ProductListing />} />
+            <Route path="/checkout" element={<Checkout/>} />
+          </Routes>
+        </Suspense>
+
+        <Footer />
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

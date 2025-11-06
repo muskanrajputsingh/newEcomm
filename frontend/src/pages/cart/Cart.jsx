@@ -107,48 +107,6 @@ const Cart = () => {
 
   const formatPrice = (price) => `₹${price.toFixed(2)}`;
 
-const handleCheckout = async () => {
-  try {
-    const orderData = await postData("/payment/order", { amount: Math.round(total) });
-    const order = orderData.data;
-
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: order.currency,
-      name: "Purple Hub",
-      description: "E-commerce Payment",
-      order_id: order.id,
-      handler: async (response) => {
-        const verifyRes = await postData("/payment/verify", {
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-        });
-
-        if (verifyRes.message === "Payment Successful") {
-          alert("✅ Payment Successful!");
-        } else {
-          alert("❌ Payment verification failed!");
-        }
-      },
-      prefill: {
-        name: "Muskan Singh",
-        email: "muskansingh7105@gmail.com",
-        contact: "9770626211",
-      },
-      theme: {
-        color: "#f8e4f8",
-      },
-    };
-
-    const razor = new window.Razorpay(options);
-    razor.open();
-  } catch (error) {
-    console.error("Error in payment:", error);
-    alert("Something went wrong during checkout!");
-  }
-};
 
   if (loading) {
     return (
@@ -293,9 +251,7 @@ const handleCheckout = async () => {
               <span>{formatPrice(total)}</span>
             </div>
 
-            <button className="checkout-btn" onClick={handleCheckout}>
-              Proceed to Checkout
-            </button>
+           <Link to="/checkout"><button className="checkout-btn">Proceed to Checkout &nbsp;<FaShoppingCart className='pb-1 text-2xl"'/></button></Link> 
 
             <div className="payment-methods">
               <p>We Accept:</p>
