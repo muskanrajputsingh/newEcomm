@@ -1,282 +1,70 @@
-import React, { useState,useEffect, useContext } from 'react'
-import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import { FaShoppingCart } from "react-icons/fa";
-import { fetchDataFromApi ,postData} from '../../utils/api';
-import './Checkout.css';
-import { MyContext } from '../../App';
+import React, { useState, useEffect } from "react";
+import { fetchDataFromApi, postData } from "../../utils/api";
+import "./Checkout.css";
 
 const Checkout = () => {
-    const [countries, setCountries] = useState([]);
-    const [cartData, setCartData] = useState([]); 
-    const [isProcessing, setIsProcessing] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [cartData, setCartData] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-   const context = useContext(MyContext);
+  const [formfields, setFormfields] = useState({
+    fullname: "",
+    country: "INDIA",
+    streetAddressLine1: "",
+    streetAddressLine2: "",
+    state: "",
+    city: "",
+    zipcode: "",
+    phone: "",
+    email: "",
+  });
 
-    useEffect(() => {
-        fetchDataFromApi('/cart')
-          .then((res) => {
-            console.log("Cart Data from API:", res); // Debugging output
-            if (Array.isArray(res)) {
-              setCartData(res);
-            } else {
-              setCartData([]); 
-            }
-          })
-          .catch(error => {
-            console.error("Error fetching cart data:", error);
-            setCartData([]); 
-          });
-      }, []);
-
-    const [formfields,setFormfields]=useState({
-        fullname:"",
-        country:"INDIA",
-        streetAddressLine1:"",
-        streetAddressLine2:"",
-        state:"",
-        city:"",
-        zipcode:"",
-        phone:"",
-        email:""
+useEffect(() => {
+  fetchDataFromApi("/cart")
+    .then((res) => {
+      console.log("Cart API Response:", res);
+      const cartArray = Array.isArray(res)
+        ? res
+        : Array.isArray(res.cart)
+        ? res.cart
+        : [];
+      console.log("Final cart array:", cartArray);
+      setCartData(cartArray);
     })
+    .catch(() => setCartData([]));
+}, []);
 
-    const onChangeInput=(e)=>{
-        setFormfields({
-            ...formfields,
-            [e.target.name]:e.target.value
-        })
-    }
 
-      const checkout=(e)=>{
-      e.preventDefault();
-      console.log(formfields);
-      if(formfields.fullname===""){
-        context.setAlertBox({
-            open:true,
-            error:true,
-            msg:"Please enter fullname"
-        })
-        return false;
-      }
-      if(formfields.country===""){
-        context.setAlertBox({
-            open:true,
-            error:true,
-            msg:"Please enter Country"
-        })
-        return false;
-      }
-      if(formfields.streetAddressLine1===""){
-        context.setAlertBox({
-            open:true,
-            error:true,
-            msg:"Please enter Street Address"
-        })
-        return false;
-      }
-      if(formfields.state===""){
-        context.setAlertBox({
-            open:true,
-            error:true,
-            msg:"Please enter State"
-        })
-        return false;
-      }
-      if(formfields.city===""){
-        context.setAlertBox({
-            open:true,
-            error:true,
-            msg:"Please enter City"
-        })
-        return false;
-      }
-      if(formfields.email===""){
-        context.setAlertBox({
-            open:true,
-            error:true,
-            msg:"Please enter Email Address"
-        })
-        return false;
-      }
-      if(formfields.zipcode===""){
-        context.setAlertBox({
-            open:true,
-            error:true,
-            msg:"Please enter Zipcode"
-        })
-        return false;
-      }
-      if(formfields.phone===""){
-        context.setAlertBox({
-            open:true,
-            error:true,
-            msg:"Please enter Phone Number"
-        })
-        return false;
-      }
 
-     const addressInfo={
-        name:formfields.fullname,
-        phone:formfields.phone,
-        address:formfields.streetAddressLine1 + formfields.streetAddressLine2,
-        pincode:formfields.zipcode,
-        date:new Date().toLocaleString(
-            "en-US",
-            {
-                month:"short",
-                day:"2-digit",
-                year:"numeric",
-            }
-        )
-     }
-
-      }
-
-//   const loadRazorpayScript = () => {
-//   return new Promise((resolve) => {
-//     if (window.Razorpay) {
-//       resolve(true);
-//       return;
-//     }
-//     const script = document.createElement("script");
-//     script.src = "https://checkout.razorpay.com/v1/checkout.js";
-//     script.onload = () => resolve(true);
-//     script.onerror = () => resolve(false);
-//     document.body.appendChild(script);
-//   });
-// };
-
-// const handleCheckout = async (e) => {
-//   e.preventDefault();
-
-//   // Validate billing form first
-//   const requiredFields = [
-//     { key: "fullname", label: "Full Name" },
-//     { key: "country", label: "Country" },
-//     { key: "streetAddressLine1", label: "Street Address" },
-//     { key: "state", label: "State" },
-//     { key: "city", label: "City" },
-//     { key: "zipcode", label: "Zipcode" },
-//     { key: "phone", label: "Phone Number" },
-//     { key: "email", label: "Email Address" },
-//   ];
-
-//   for (let field of requiredFields) {
-//     if (!formfields[field.key]?.trim()) {
-//       context.setAlertBox({
-//         open: true,
-//         error: true,
-//         msg: `Please enter ${field.label}`,
-//       });
-//       return;
-//     }
-//   }
-
-//   // Proceed only if form is valid
-//   try {
-//     setIsProcessing(true);
-
-//     // Load Razorpay SDK
-//     const isLoaded = await loadRazorpayScript();
-//     if (!isLoaded) {
-//       context.setAlertBox({
-//         open: true,
-//         error: true,
-//         msg: "Failed to load Razorpay SDK. Check your internet connection.",
-//       });
-//       setIsProcessing(false);
-//       return;
-//     }
-
-//     // Calculate total from cart data
-//     const total = cartData.length
-//       ? cartData
-//           .map((item) => parseInt(item.price) * item.quantity)
-//           .reduce((sum, val) => sum + val, 0)
-//       : 0;
-
-//     if (total === 0) {
-//       context.setAlertBox({
-//         open: true,
-//         error: true,
-//         msg: "Your cart is empty!",
-//       });
-//       setIsProcessing(false);
-//       return;
-//     }
-
-//     // Create order in backend
-//     const orderData = await postData("/payment/order", { amount: Math.round(total * 100) });
-//     const order = orderData.data;
-
-//     const options = {
-//       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-//       amount: order.amount,
-//       currency: order.currency,
-//       name: "Fashion Nova",
-//       description: "E-commerce Payment",
-//       order_id: order.id,
-//       handler: async (response) => {
-//         setIsProcessing(false);
-//         const verifyRes = await postData("/payment/verify", {
-//           razorpay_order_id: response.razorpay_order_id,
-//           razorpay_payment_id: response.razorpay_payment_id,
-//           razorpay_signature: response.razorpay_signature,
-//         });
-
-//         if (verifyRes.message === "Payment Successful") {
-//           context.setAlertBox({
-//             open: true,
-//             error: false,
-//             msg: "Payment Successful!",
-//           });
-//         } else {
-//           context.setAlertBox({
-//             open: true,
-//             error: true,
-//             msg: "Payment verification failed!",
-//           });
-//         }
-//       },
-//       prefill: {
-//         name: formfields.fullname,
-//         email: formfields.email,
-//         contact: formfields.phone,
-//       },
-//       theme: {
-//         color: "#eddcd0",
-//       },
-//     };
-
-//     const razor = new window.Razorpay(options);
-//     razor.open();
-
-//     razor.on("payment.failed", () => {
-//       setIsProcessing(false);
-//       context.setAlertBox({
-//         open: true,
-//         error: true,
-//         msg: "Payment failed! Please try again.",
-//       });
-//     });
-//   } catch (error) {
-//     console.error("Error in payment:", error);
-//     context.setAlertBox({
-//       open: true,
-//       error: true,
-//       msg: "Something went wrong during checkout!",
-//     });
-//     setIsProcessing(false);
-//   }
-// };
-
+  const onChangeInput = (e) => {
+    setFormfields({ ...formfields, [e.target.name]: e.target.value });
+  };
 const handleCheckout = async () => {
+  // Validation: check if all required fields are filled
+  const requiredFields = ["fullname", "streetAddressLine1", "state", "city", "zipcode", "phone", "email"];
+  const emptyFields = requiredFields.filter((field) => !formfields[field]?.trim());
+
+  if (emptyFields.length > 0) {
+    alert("⚠️ Please fill in all billing details before proceeding to checkout.");
+    return;
+  }
+
+  if (cartData.length === 0) {
+    alert(" Your cart is empty. Add items before checking out.");
+    return;
+  }
+
   try {
-    const orderData = await postData("/payment/order", { amount: Math.round(total) });
+    const total =
+      cartData.length !== 0
+        ? cartData
+            .map((item) => parseInt(item.productId?.price) * item.quantity)
+            .reduce((total, value) => total + value, 0)
+        : 0;
+
+    const orderData = await postData("/payment/order", {
+      amount: Math.round(total),
+    });
     const order = orderData.data;
 
     const options = {
@@ -300,9 +88,9 @@ const handleCheckout = async () => {
         }
       },
       prefill: {
-        name: "Muskan Singh",
-        email: "muskansingh7105@gmail.com",
-        contact: "9770626211",
+        name: formfields.fullname,
+        email: formfields.email,
+        contact: formfields.phone,
       },
       theme: {
         color: "#f8e4f8",
@@ -317,184 +105,191 @@ const handleCheckout = async () => {
   }
 };
 
+
   return (
-    <>
-      <section className='section'>
-       <div className="container">
-        <form className='checkoutform' onSubmit={checkout}>
-        <div className="row">
-            <div className="col-md-7">
-                <h5 className='hd fw-800 py-2'>BILLING DETAILS</h5>
+    <section className="checkout-section">
+      <div className="container">
+        <form className="checkout-form">
+          <div className="checkout-grid">
+            {/* BILLING DETAILS */}
+            <div className="billing-section">
+              <h5 className="section-title">Billing Details</h5>
 
-                <div className="row mt-3">
-                    <div className="col-md-6">
-                        <div className="form-group">
-                        <TextField label="Full Name *" variant="outlined" className='w-100' size='small' name="fullname"
-                         onChange={onChangeInput}/>
-                        </div>
-                    </div>
+              <div className="form-group">
+                <label>Full Name *</label>
+                <input
+                  type="text"
+                  name="fullname"
+                  value={formfields.fullname}
+                  onChange={onChangeInput}
+                  placeholder="Enter your full name"
+                />
+              </div>
 
-                    <div className="col-md-6">
-                        <div className="form-group">
-                  <FormControl fullWidth className="inps">
-                  <InputLabel id="country-label">Country *</InputLabel>
-                  <Select
-                    labelId="country-label"
-                    name="country"
-                    value={formfields.country}
-                    onChange={onChangeInput}
-                    size="small"
-                  >
-                    {countries.length > 0 ? (
-                      countries.map((c) => (
-                        <MenuItem key={c.alpha2Code} value={c.name}>
-                          {c.name}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem value="INDIA">INDIA</MenuItem> // default fallback
-                    )}
-                  </Select>
-                </FormControl>
+              <div className="form-group">
+                <label>Country *</label>
+                <select
+                  name="country"
+                  value={formfields.country}
+                  onChange={onChangeInput}
+                >
+                  {countries.length > 0 ? (
+                    countries.map((c) => (
+                      <option key={c.alpha2Code} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="INDIA">INDIA</option>
+                  )}
+                </select>
+              </div>
 
-                        </div>
-                    </div>
+              <div className="form-group">
+                <label>Street Address *</label>
+                <input
+                  type="text"
+                  name="streetAddressLine1"
+                  onChange={onChangeInput}
+                  placeholder="House number and street name"
+                />
+                <input
+                  type="text"
+                  name="streetAddressLine2"
+                  onChange={onChangeInput}
+                  placeholder="Apartment, suite, etc. (optional)"
+                />
+              </div>
 
-                    </div>
+              <div className="form-group">
+                <label>State *</label>
+                <input
+                  type="text"
+                  name="state"
+                  onChange={onChangeInput}
+                  placeholder="Enter your state"
+                />
+              </div>
 
-                   <h6>Street address *</h6> 
+              <div className="form-group">
+                <label>City *</label>
+                <input
+                  type="text"
+                  name="city"
+                  onChange={onChangeInput}
+                  placeholder="Enter your city"
+                />
+              </div>
 
-                   <div className="row mt-4">
-                    <div className="col-md-12">
-                        <div className="form-group">
-                        <TextField label="House number and Street Name" variant="outlined" className='w-100' size='small'
-                       name="streetAddressLine1" onChange={onChangeInput} />
-                        </div>
-                    </div>
-                    <div className="col-md-12">
-                        <div className="form-group">
-                        <TextField label="Apartment,suite,flat etc.(optional)" variant="outlined" className='w-100' size='small'
-                         name="streetAddressLine2" onChange={onChangeInput}/>
-                        </div>
-                    </div>
-                   </div>
+              <div className="form-group">
+                <label>Zipcode *</label>
+                <input
+                  type="text"
+                  name="zipcode"
+                  onChange={onChangeInput}
+                  placeholder="Enter zipcode"
+                />
+              </div>
 
-                   <h6>State *</h6> 
+              <div className="form-group">
+                <label>Phone *</label>
+                <input
+                  type="text"
+                  name="phone"
+                  onChange={onChangeInput}
+                  placeholder="Enter phone number"
+                />
+              </div>
 
-                        <div className="row mt-4">
-                        <div className="col-md-12">
-                            <div className="form-group">
-                            <TextField label="State" variant="outlined" className='w-100' size='small'  name="state" onChange={onChangeInput}/>
-                            </div>
-                        </div>
-                        </div>
+              <div className="form-group">
+                <label>Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  onChange={onChangeInput}
+                  placeholder="Enter email address"
+                />
+              </div>
+            </div>
 
-                   <h6>Town / City *</h6> 
-
-                        <div className="row mt-4">
-                        <div className="col-md-12">
-                            <div className="form-group">
-                            <TextField label="City" variant="outlined" className='w-100' size='small'  name="city" onChange={onChangeInput}/>
-                            </div>
-                        </div>
-                        </div>
-
-                        <h6>Pincode / ZIP *</h6> 
-
-                        <div className="row mt-4">
-                        <div className="col-md-12">
-                            <div className="form-group">
-                            <TextField label="PinCode" variant="outlined" className='w-100' size='small'  name="zipcode" onChange={onChangeInput}/>
-                            </div>
-                        </div>
-                        </div>
-
-                        <h6>Contact *</h6> 
-
-                        <div className="row mt-4">
-                        <div className="col-md-6">
-                            <div className="form-group">
-                            <TextField label="Phone Number" variant="outlined" className='w-100' size='small'  name="phone" onChange={onChangeInput}/>
-                            </div>
-                        </div>
-                        <div className="col-md-6">
-                            <div className="form-group">
-                            <TextField label="Email Address" variant="outlined" className='w-100' size='small'  name="email" onChange={onChangeInput}/>
-                            </div>
-                        </div>
-                        </div>
-
-                    </div>
-
-       <div className="col-md-5">
-        <div className="card orderinfo">
-         <h5>YOUR ORDER</h5>
-         <div className="table-responsive mt-3">
-            <table className='table table-borderless'>
-            <thead>
-                <tr>
+            {/* ORDER SUMMARY */}
+            <div className="order-summary">
+              <h5 className="section-title">Your Order</h5>
+              <table>
+                <thead>
+                  <tr>
                     <th>Image</th>
                     <th>Product</th>
                     <th>Subtotal</th>
-                </tr>
-            </thead>
+                  </tr>
+                </thead>
+      <tbody>
+  {cartData?.length > 0 ? (
+    cartData.map((item, index) => (
+      <tr key={index}>
+        <td>
+          <img
+            src={item.productId?.images?.[0]}
+            alt={item.productId?.name}
+            height="50"
+            width="50"
+          />
+        </td>
+        <td>
+         {item.productId?.name
+  ?.split(" ")
+  .slice(0, 2)
+  .join(" ") + (item.productId?.name?.split(" ").length > 2 ? "..." : "")} × {item.quantity}
 
-           <tbody>
-           
-           {
-            cartData?.length !==0 && cartData?.map((item,index)=>{
-                return(
-                    <tr key={index}>
-                    <td><img src={item.image} height="50px" width="50px" alt="" /></td>
-                    <td>{item.productTitle} <b>&nbsp; ⤬ {item.quantity}</b></td>
-                    <td> ₹ {item.price}</td>
-                </tr>
-                )
-            })
-           }
+        </td>
+        <td>₹ {item.productId?.price}</td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="3" className="empty-cart">
+        No items in cart
+      </td>
+    </tr>
+  )}
+  <tr>
+    <td colSpan="2">Total</td>
+    <td>
+      ₹
+      {cartData.length !== 0
+        ? cartData
+            .map((item) => parseInt(item.productId?.price) * item.quantity)
+            .reduce((a, b) => a + b, 0)
+        : 0}
+    </td>
+  </tr>
+     </tbody>
 
-            <tr>
-                <td>Subtotal</td>
-                <td>Total amount to pay </td>
-                <td> ₹ {
-                    cartData.length!==0 && cartData.map(item=>parseInt(item.price)*item.quantity).reduce((total,value)=>
-                    total+value,0)
-                  }</td>
-            </tr>
+              </table>
 
-           </tbody>
-
-            </table>
-         </div>
-
-        <button
-          type="button"
-          className="checkout-btn w-100 mt-3 flex items-center justify-center gap-2"
-          onClick={handleCheckout}
-          disabled={isProcessing} // disable button during processing
-        >
-          {isProcessing ? (
-            <>
-              Processing Checkout...
-               <span className="spinner"></span>
-            </>
-          ) : (
-            <>
-              Checkout &nbsp;
-              <FaShoppingCart className="pb-1 text-2xl" />
-            </>
-          )}
-        </button>
-
-        </div>
-       </div>
-
-        </div>
+              <button
+                type="button"
+                className="checkout2-btn"
+                onClick={handleCheckout}
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    Processing Checkout...
+                    <span className="spinner"></span>
+                  </>
+                ) : (
+                  <>
+                    Checkout 
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </form>
-       </div>
-      </section>
-    </>
-  )
-}
+      </div>
+    </section>
+  );
+};
 
-export default Checkout
+export default Checkout;

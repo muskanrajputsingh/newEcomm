@@ -251,7 +251,7 @@ const Cart = () => {
               <span>{formatPrice(total)}</span>
             </div>
 
-           <Link to="/checkout"><button className="checkout-btn">Proceed to Checkout &nbsp;<FaShoppingCart className='pb-1 text-2xl"'/></button></Link> 
+           <Link to="/checkout"><button className="checkout-btn">Proceed to Checkout</button></Link> 
 
             <div className="payment-methods">
               <p>We Accept:</p>

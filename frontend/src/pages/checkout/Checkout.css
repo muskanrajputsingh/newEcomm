@@ -1,32 +1,112 @@
-.checkoutform .form-group{
-    margin-bottom: 20px;
-}
-.checkoutform .form-group input,
-.checkoutform .form-group .inps
-{
-    background-color: rgb(252, 251, 251);
+.checkout-section {
+  padding: 40px 0;
+  background-color: #fafafa;
 }
 
-.orderinfo{
-    background: #a09c9c;
-    padding: 25px;
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
 }
-.orderinfo thead{
-    border-top:1px solid rgba(0,0,0,0.1) !important;
-    border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
 }
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #b85cf4;
+  outline: none;
+}
+
+.order-summary {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.order-summary table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-summary th,
+.order-summary td {
+  text-align: left;
+  padding: 10px 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.order-summary img {
+  border-radius: 6px;
+}
+
+
 .spinner {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid white;
+  border: 3px solid #fff;
+  border-top: 3px solid #b85cf4;
   border-radius: 50%;
   width: 18px;
   height: 18px;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
   display: inline-block;
-  padding-top:7px;
 }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+@media (max-width: 768px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+ .checkout2-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #ca77b0,#e09dba);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .checkout2-btn:hover {
+    background: linear-gradient(135deg, #c577ab, #c06fa6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(125, 68, 115, 0.3);
+  }

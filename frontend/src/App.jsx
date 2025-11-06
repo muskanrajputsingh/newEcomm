@@ -6,13 +6,14 @@ import { Suspense, lazy } from "react";
 
 import Footer from "./components/footer/Footer";
 import Navbar from "./components/navbar/Navbar";
+import Checkout from "./pages/checkout/Checkout";
 
 //  Lazy-loaded pages
 const Home = lazy(() => import("./pages/home/Home"));
 const ProductDetail = lazy(() => import("./pages/productDetail/ProductDetail"));
 const Cart = lazy(() => import("./pages/cart/Cart"));
 const ProductListing = lazy(() => import("./pages/productListing/ProductListing"));
-const Checkout = lazy(()=> import("./pages/checkout/Checkout"))
+// const Checkout = lazy(()=> import("./pages/checkout/Checkout"))
 
 function App() {
   return (
