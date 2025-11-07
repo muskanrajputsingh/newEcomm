@@ -4,6 +4,7 @@ import "./Navbar.css"
 import { Link, useNavigate } from "react-router-dom"
 import { fetchDataFromApi } from "../../utils/api"
 import { RiLoginCircleLine } from "react-icons/ri"
+import { useCart } from "@/context"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -11,9 +12,10 @@ const Navbar = () => {
   const [catData, setCatData] = useState({ categoryList: [] })
   const [subCatData, setSubCatData] = useState({ subCategoryList: [] })
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
-  const [cartItems, setCartItems] = useState([])
   const [loading, setLoading] = useState(true)   
   const navigate = useNavigate()
+  
+  const { cartItems,setCartItems } = useCart();
 
   useEffect(() => {
     window.scrollTo(0, 0)

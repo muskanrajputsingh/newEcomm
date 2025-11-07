@@ -9,11 +9,13 @@ import "swiper/css/pagination"
 import "./Featured.css"
 import { Link } from "react-router-dom"
 import { toast } from 'react-toastify';
+import { useCart } from "@/context";
 
 const Featured = () => {
   const swiperRef = useRef(null)
   const [featuredProducts, setFeaturedProducts] = useState([]);
-  
+  const { handleAddToCart } = useCart();
+
   useEffect(() => {
     fetchDataFromApi("/featured")
       .then((res) => {
@@ -35,19 +37,6 @@ const Featured = () => {
       <Star key={index} size={14} className={index < Math.floor(rating) ? "star filled" : "star"} />
     ))
   }
-
-
-const handleAddToCart = async (productId) => {
-  try {
-    const data = await postData('/cart', { productId, quantity: 1 });
-
-    toast.success("🛒 Product added to cart!");
-    console.log('Cart Response:', data); 
-  } catch (error) {
-    console.error('Error adding to cart:', error.response?.data || error.message);
-    toast.error("❌ Failed to add to cart");
-  }
-};
 
 
   return (
@@ -126,7 +115,7 @@ const handleAddToCart = async (productId) => {
                       className="add-to-cart"
                       onClick={(e) => {
                         e.preventDefault(); 
-                        handleAddToCart(product._id);
+                        handleAddToCart(product._id,1);
                       }}
                     >
                       <ShoppingCart size={18} />

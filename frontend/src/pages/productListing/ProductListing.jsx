@@ -13,6 +13,7 @@ import "./ProductListing.css";
 import { useParams } from "react-router-dom";
 import { fetchDataFromApi,postData } from "@/utils/api";
 import { toast } from 'react-toastify';
+import { useCart } from "@/context";
 
 const ProductListing = () => {
   const [products, setProducts] = useState([]);
@@ -30,8 +31,9 @@ const ProductListing = () => {
   const [filterBrand, setFilterBrand] = useState("");
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 1000]);
+  const { handleAddToCart } = useCart();
 
-    // ✅ Pagination states
+    // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
 
@@ -147,20 +149,7 @@ const filterByBrand = async (brand) => {
 useEffect(() => {
   window.scrollTo(0, 0);
   fetchSubCategories();
-}, [id, subCatId]);   // ✅ run again when route id or filter subcat changes
-
-
-const handleAddToCart = async (productId) => {
-  try {
-    const data = await postData('/cart', { productId, quantity: 1 });
-
-    toast.success("🛒 Product added to cart!");
-    console.log('Cart Response:', data); 
-  } catch (error) {
-    console.error('Error adding to cart:', error.response?.data || error.message);
-    toast.error("❌ Failed to add to cart");
-  }
-};
+}, [id, subCatId]);   //  run again when route id or filter subcat changes
 
 
  const fetchSubCategories = async () => {
@@ -196,7 +185,7 @@ const relatedSubCategories = subCategories.filter(
 
   const uniqueBrands = [...new Set(products.map((p) => p.brand))];
 
- // ✅ Pagination logic
+ //  Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -398,7 +387,7 @@ const relatedSubCategories = subCategories.filter(
                     <Heart size={20} />
                   </button>
                 </div>
-               <button className="add-to-cart-btn2" onClick={(e) => { e.preventDefault(); handleAddToCart(product._id); }}> 
+               <button className="add-to-cart-btn2" onClick={(e) => { e.preventDefault();  handleAddToCart(product._id, 1); }}> 
                 <ShoppingBag size={18} /> <span>Add to Cart</span>
                  </button>
               </div>

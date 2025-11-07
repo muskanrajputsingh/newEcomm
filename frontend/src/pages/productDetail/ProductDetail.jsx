@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom"
 import { fetchDataFromApi,postData } from "@/utils/api"
 import { toast } from 'react-toastify';
 import { Link } from "react-router-dom"
+import { useCart } from "@/context"
  
 const ProductDetail = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
@@ -23,7 +24,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [relatedProducts, setRelatedProducts] = useState([]);
-
+  const { handleAddToCart } = useCart();
 
   const { id } = useParams() 
 
@@ -110,18 +111,6 @@ const ProductDetail = () => {
       <Star key={index} className={`star ${index < rating ? "star-filled" : "star-empty"}`} />
     ))
   }
-
-const handleAddToCart = async (productId) => {
-  try {
-    const data = await postData('/cart', { productId, quantity: 1 });
-
-    toast.success("🛒 Product added to cart!");
-    console.log('Cart Response:', data); 
-  } catch (error) {
-    console.error('Error adding to cart:', error.response?.data || error.message);
-    toast.error("❌ Failed to add to cart");
-  }
-};
 
 
 useEffect(() => {
@@ -253,7 +242,7 @@ useEffect(() => {
               <button className="add-to-cart-btn3"
                       onClick={(e) => {
                         e.preventDefault(); 
-                        handleAddToCart(products._id);
+                        handleAddToCart(products._id, quantity);
                       }}
                     >
                 <ShoppingCart size={20} />

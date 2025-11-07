@@ -4,9 +4,11 @@ import { useEffect,useState } from "react"
 import { fetchDataFromApi,postData } from "../../utils/api"
 import { Link } from "react-router-dom"
 import { toast } from 'react-toastify';
+import { useCart } from "@/context";
 
 const Trendy = () => {
   const [trendyProducts, setTrendyProducts] = useState([]);
+  const { handleAddToCart } = useCart();
 
   useEffect(()=>{
     fetchDataFromApi("/trendy")
@@ -31,22 +33,6 @@ const Trendy = () => {
     }
     return null
   }
-
-  
-const handleAddToCart = async (productId) => {
-  try {
-    const data = await postData('/cart', { productId, quantity: 1 });
-
-    toast.success("🛒 Product added to cart!");
-    console.log('Cart Response:', data); 
-    //  window.location.reload();
-  } catch (error) {
-    console.error('Error adding to cart:', error.response?.data || error.message);
-    toast.error("❌ Failed to add to cart");
-  }
-};
-
-  
 
   return (
     <section className="products-section">
@@ -80,7 +66,7 @@ const handleAddToCart = async (productId) => {
                   <button className="add-to-cart-btn"
                    onClick={(e) => {
                         e.preventDefault(); 
-                        handleAddToCart(product._id);
+                        handleAddToCart(product._id,1);
                       }}
                     >
                     <ShoppingCart size={16} />

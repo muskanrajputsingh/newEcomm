@@ -14,9 +14,10 @@ import {
 import "./Cart.css";
 import { fetchDataFromApi, editData, deleteData,postData } from "@/utils/api";
 import { Link } from "react-router-dom";
+import { useCart } from "@/context";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
+  const {cartItems,setCartItems} = useCart();
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -54,12 +55,13 @@ const Cart = () => {
     }
   };
 
-  const calculateSubtotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.productId.price * item.quantity,
-      0
-    );
-  };
+const calculateSubtotal = () => {
+  return cartItems.reduce((total, item) => {
+    if (!item.productId) return total; // skip invalid items
+    return total + (item.productId.price || 0) * item.quantity;
+  }, 0);
+};
+
 
   const availableCoupons = [
     { code: "SUMMER25", discount: 0.25, type: "percentage" },
